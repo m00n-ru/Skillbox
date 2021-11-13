@@ -65,8 +65,12 @@ void correctEmail(std::string email) {
     std::string firstPart = email.substr(0, email.find('@'));
     std::string secondPart = email.substr(email.find('@') + 1);
 
-    if (correctSymbolFirstPart(firstPart) && correctSymbolSecondPart(secondPart))
+    if (correctSymbolFirstPart(firstPart) &&
+        correctSymbolSecondPart(secondPart)) {
       std::cout << "YES!!! email is CORRECT";
+    } else {
+      std::cout << "NO!!! email is INCORRECT";
+    }
   } else {
     std::cout << "NO!!! email is INCORRECT";
   }

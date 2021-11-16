@@ -31,7 +31,22 @@ std::string checkWin(std::string st1, std::string st2, std::string st3) {
       } else if (st[6] == st[7] && st[6] == st[8] && win < 2) {
         win += 1;
         winChar = st[6];
-      }
+      } else if (st[0] == st[3] && st[0] == st[6] && win < 2) {
+				win += 1;
+				winChar = st[0];
+			} else if (st[1] == st[4] && st[1] == st[7] && win < 2) {
+				win += 1;
+				winChar = st[1];
+			} else if (st[2] == st[5] && st[2] == st[8] && win < 2) {
+				win += 1;
+				winChar = st[2];
+			} else if (st[0] == st[4] && st[0] == st[8] && win < 2) {
+				win += 1;
+				winChar = st[0];
+			}else if (st[2] == st[4] && st[2] == st[6] && win < 2) {
+				win += 1;
+				winChar = st[2];
+			}
       if (win == 0) {
         return "Nobody";
       } else if (winChar == 'O' && numO == numX) {

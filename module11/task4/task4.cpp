@@ -29,15 +29,17 @@ int compareNum(std::string num1, std::string num2) {
 }
 
 int main() {
-  std::string numbers1;
-  std::string numbers2;
+  while (true) {
+    std::string numbers1;
+    std::string numbers2;
 
-  std::cout << "Enter two numbers to compare: ";
-  std::cin >> numbers1;
-  std::cin >> numbers2;
+    std::cout << "Enter two numbers to compare: ";
+    std::cin >> numbers1;
+    std::cin >> numbers2;
 
-  std::cout << (compareNum(numbers1, numbers2) > 0   ? "MORE"
-                : compareNum(numbers1, numbers2) < 0 ? "LESS"
-                                                     : "EQUAL");
-  std::cout << std::endl;
+    std::cout << (compareNum(numbers1, numbers2) > 0   ? "MORE"
+                  : compareNum(numbers1, numbers2) < 0 ? "LESS"
+                                                       : "EQUAL");
+    std::cout << std::endl;
+  }
 }

@@ -29,8 +29,8 @@ bool correctSymbolFirstPart(std::string email) {
     flag = false;
   } else {
     for (int i = 0; i < email.length() && flag; i++) {
-      if ((email[i] == '.' && i != 0 && i != email.length() - 1 && email[i - 1] != '.') 
-          || (strCheck(email[i])) || engAbcNum(email[i])) {
+      if ((email[i] == '.' && i != 0 && i != email.length() - 1 &&
+           email[i - 1] != '.') || (strCheck(email[i])) || engAbcNum(email[i])) {
         continue;
       } else {
         flag = false;
@@ -61,7 +61,6 @@ void correctEmail(std::string email) {
   if (email.find('@') != std::string::npos &&
       email.find('@') == email.rfind('@') && email.find('@') != 0 &&
       email.find('@') < email.length() - 3) {
-
     std::string firstPart = email.substr(0, email.find('@'));
     std::string secondPart = email.substr(email.find('@') + 1);
 
@@ -76,9 +75,11 @@ void correctEmail(std::string email) {
   }
 }
 
-int main(){
-  std::string email;
-  std::cout << "Enter e-mail:" << std::endl;
-  std::cin >> email;
-  correctEmail(email);
+int main() {
+  while (true) {
+    std::string email;
+    std::cout << "Enter e-mail:" << std::endl;
+    std::cin >> email;
+    correctEmail(email);
+  }
 }

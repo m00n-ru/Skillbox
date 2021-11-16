@@ -1,5 +1,6 @@
-#include <iostream>
 #include <math.h>
+
+#include <iostream>
 
 int transform(std::string ip) {
   int num = 0;
@@ -67,13 +68,15 @@ bool corrcetIp(std::string ip) {
 }
 
 int main() {
-	std::string ipAddress;
-	std::cout << "Enter IP address:" << std::endl;
-	std::cin >> ipAddress;
+  while (true) {
+    std::string ipAddress;
+    std::cout << "Enter IP address:" << std::endl;
+    std::cin >> ipAddress;
 
-  if (corrcetIp(ipAddress)) {
-    std::cout << "IP address is CORRECT";
-  } else {
-    std::cout << "INVALID IP ADDRESS";
+    if (corrcetIp(ipAddress)) {
+      std::cout << "IP address is CORRECT";
+    } else {
+      std::cout << "INVALID IP ADDRESS";
+    }
   }
 }

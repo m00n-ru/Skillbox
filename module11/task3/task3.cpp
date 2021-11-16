@@ -6,7 +6,7 @@ int transform(std::string ip) {
   int num = 0;
   for (int i = 0; i < ip.length(); i++) {
     num += (ip[i] - '0') * std::pow(10, ip.length() - 1 - i);
-    if (num == 0) num += 1000;
+    if (ip.length() > 1 && num == 0) num += 1000;
   }
   return num;
 }
@@ -78,5 +78,6 @@ int main() {
     } else {
       std::cout << "INVALID IP ADDRESS";
     }
+		std::cout << std::endl;
   }
 }

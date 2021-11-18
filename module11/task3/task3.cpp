@@ -28,40 +28,16 @@ bool corrcetSymbol(std::string ip) {
 
 bool corrcetIp(std::string ip) {
   if (corrcetSymbol(ip)) {
-    std::string num1 = ip.substr(0, ip.find('.'));
-    if (num1.empty() || ip.empty() || num1.length() > 3) {
-      return false;
-    } else {
-      ip.erase(0, ip.find('.') + 1);
-    }
 
-    std::string num2 = ip.substr(0, ip.find('.'));
-    if (num2.empty() || ip.empty() || num2.length() > 3) {
-      return false;
-    } else {
-      ip.erase(0, ip.find('.') + 1);
-    }
-
-    std::string num3 = ip.substr(0, ip.find('.'));
-    if (num3.empty() || ip.empty() || num3.length() > 3) {
-      return false;
-    } else {
-      ip.erase(0, ip.find('.') + 1);
-    }
-
-    if (ip.empty() || ip.find('.') != std::string::npos) {
-      return false;
-    } else {
-      std ::string num4 = ip;
-      if (num4.length() > 3) return false;
-
-      if (transform(num1) <= 255 && transform(num2) <= 255 &&
-          transform(num3) <= 255 && transform(num4) <= 255) {
-        return true;
-      } else {
+		for (int i = 0; i < 4; i++) {
+      std::string num = ip.substr(0, ip.find('.'));
+      if (num.empty() || ip.empty() || num.length() > 3 || transform(num) > 255) {
         return false;
+      } else {
+        ip.erase(0, ip.find('.') + 1);
       }
     }
+		return true;
   } else {
     return false;
   }
@@ -78,6 +54,6 @@ int main() {
     } else {
       std::cout << "INVALID IP ADDRESS";
     }
-		std::cout << std::endl;
+    std::cout << std::endl;
   }
 }

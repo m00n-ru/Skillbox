@@ -60,7 +60,7 @@ bool correctSymbolSecondPart(std::string email) {
 void correctEmail(std::string email) {
   if (email.find('@') != std::string::npos &&
       email.find('@') == email.rfind('@') && email.find('@') != 0 &&
-      email.find('@') < email.length() - 3) {
+      email.find('@') < email.length() - 1) {
     std::string firstPart = email.substr(0, email.find('@'));
     std::string secondPart = email.substr(email.find('@') + 1);
 
@@ -81,5 +81,6 @@ int main() {
     std::cout << "Enter e-mail:" << std::endl;
     std::cin >> email;
     correctEmail(email);
+		std::cout << std::endl;
   }
 }

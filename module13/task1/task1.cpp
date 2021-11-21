@@ -19,12 +19,15 @@ int main() {
 
       std::cout << "Which number should be deleted: ";
       std::cin >> n;
+      int c = 0;
       for (int i = 0; i < vec.size(); i++) {
         if (vec[i] == n) {
-          vec.erase(vec.begin() + i);
-          --i;
+          ++c;
+        } else {
+          vec[i - c] = vec[i];
         }
       }
+      vec.resize(vec.size() - c);
 
       if (vec.size()) {
         for (int i = 0; i < vec.size(); i++) {

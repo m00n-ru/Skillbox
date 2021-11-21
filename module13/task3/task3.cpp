@@ -2,27 +2,21 @@
 #include <vector>
 
 int main() {
-  std::vector<int> base;
-	int baseSize = 20;
+  std::vector<int> base(3);
   int num = 0;
   std::cout << "Fill base" << std::endl;
+  int buff = 0;
 
   while (true) {
     std::cin >> num;
     if (num == -1) break;
-    if (base.size() < baseSize) {
-      base.push_back(num);
-    } else {
-      base.erase(base.begin());
-      base.push_back(num);
-    }
+
+    base[buff++] = num;
+    if (buff == base.size()) buff = 0;
   }
 
-  if (base.empty()) {
-    std::cout << "Empty base" << std::endl;
-  } else {
-    for (int i = 0; i < base.size(); i++) {
-      std::cout << base[i] << ' ';
-    }
+  for (int i = 0; i < base.size(); i++) {
+    if (buff + i == base.size()) buff = buff - base.size();
+    std::cout << base[buff + i] << ' ';
   }
 }

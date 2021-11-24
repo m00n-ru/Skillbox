@@ -126,17 +126,17 @@ void inputField(bool field[][10]) {
 
 // - обработка хода
 // - подсечет оставшихся
-void strike() {}
-
+//void strike() {}
+//
 // - победитель
-bool win() {}
+//bool win() {}
 
 int main() {
   // 4-1 3-2 2-3 1-4
 
   bool field1[10][10];
   bool field2[10][10];
-  int pl = 1, x1, y1;
+  //int pl = 1, x1, y1;
 
   initField(field1);
   initField(field2);

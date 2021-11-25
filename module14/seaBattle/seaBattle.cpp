@@ -124,19 +124,47 @@ void inputField(bool field[][10]) {
   }
 }
 
-// - обработка хода
-// - подсечет оставшихся
-//void strike() {}
-//
-// - победитель
-//bool win() {}
+// + обработка хода
+// + обработка правил. кординат удара
+bool turn(bool field1[][10], bool field2[][10], int pl) {
+  int x = 0, y = 0;
+  do {
+    std::cout << pl << " player turn. Enter cordinate (x y)" << std::endl
+              << "(enter '555' to display the field)" << std::endl
+              << ".> ";
+
+    std::cin >> x;
+    if (x == 555) {
+      drowField(field1, field2);
+      std::cout << pl << " player turn. Enter cordinate (x y)" << std::endl
+                << "(enter '555' to display the field)" << std::endl
+                << ".> ";
+      std::cin >> x;
+    }
+    std::cin >> y;
+
+    if (x < 0 || x > 9 || y < 0 || y > 9)
+      std::cout << "Error, repit input" << std::endl;
+  } while (x < 0 || x > 9 || y < 0 || y > 9);
+
+  if (pl == 1 ? field1[y][x] : field2[y][x]) {
+    pl == 1 ? field1[y][x] = false : field2[y][x] = false;
+    std::cout << "STRIKE" << std::endl;
+    return true;
+  } else {
+    std::cout << "MISS" << std::endl;
+    return false;
+  }
+}
 
 int main() {
   // 4-1 3-2 2-3 1-4
 
   bool field1[10][10];
   bool field2[10][10];
-  //int pl = 1, x1, y1;
+  int pl = 1;
+  int checkWin1 = 20;
+  int checkWin2 = 20;
 
   initField(field1);
   initField(field2);
@@ -148,10 +176,11 @@ int main() {
   inputField(field2);
   drowField(field1, field2);
 
-  //	while(win()){
-  //		std::cout << "Player " << pl << " turn." << std::endl;
-  //		std::cin >> x1 >> y1;
-  //		strike();
-  //		pl = pl == 1 ? 2 : 1;
-  //	}
+  while (checkWin1 != 0 && checkWin2 != 0) {
+    if (turn(field1, field2, pl)) {
+      pl == 1 ? checkWin1 -= 1 : checkWin2 -= 1;
+    }
+    pl = pl == 1 ? 2 : 1;
+  }
+  std::cout << "Player " << pl << " WIN!, Congratulations!";
 }

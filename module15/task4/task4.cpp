@@ -2,7 +2,7 @@
 #include <vector>
 
 int main() {
-  std::vector<int> v = {-100, -50, -5, 1, 10, 15};
+  std::vector<int> v = {1, 2, 4};
   int iE = 0;
   int iS = 0;
 
@@ -10,6 +10,8 @@ int main() {
     if (v[i] >= 0) {
       iE = i;
       iS = i - 1;
+      if (iS < 0) 
+			iS = v.size() - 1;
       break;
     }
   }

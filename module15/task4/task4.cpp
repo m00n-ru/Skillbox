@@ -10,8 +10,7 @@ int main() {
     if (v[i] >= 0) {
       iE = i;
       iS = i - 1;
-      if (iS < 0) 
-			iS = v.size() - 1;
+      if (iS < 0) iS = v.size() - 1;
       break;
     }
   }

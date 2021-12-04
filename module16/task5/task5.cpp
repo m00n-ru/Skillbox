@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-enum mang : const int {
+enum mang {
   mangAllHome,
   mangElectHome,
   mangLigthIn,

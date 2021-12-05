@@ -14,7 +14,7 @@ bool substr(const char* a, const char* b) {
       }
     } else {
       check = false;
-			j=0;
+      j = 0;
     }
   }
   return check;

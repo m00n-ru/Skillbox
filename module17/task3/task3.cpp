@@ -14,13 +14,14 @@ bool substr(const char* a, const char* b) {
       }
     } else {
       check = false;
+			j=0;
     }
   }
   return check;
 }
 
 int main() {
-  const char* a = "Hello world";
+  const char* a = "Hwolo world";
   const char* b = "wor";
   const char* c = "banana";
   std::cout << substr(a, b) << " " << substr(a, c);

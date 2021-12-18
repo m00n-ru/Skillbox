@@ -1,0 +1,11 @@
+Tom Hanks 10.11.2020 35500
+Rebecca Williams 01.01.2021 85000
+Sally Field 15.08.2021 15600
+Michael Humphreys 23.05.2020 29400
+Harold Herthum 09.06.2019 74300
+George Kelly 12.03.2018 45000
+Bob Penny 13.05.2020 12500
+John Randall 02.10.2020 23400
+Sam Anderson 15.07.2020 6500
+Margo Moorer 24.02.2019 12350
+Total paid: 339550

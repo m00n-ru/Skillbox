@@ -36,9 +36,9 @@ void initAtm() {
 	}
 	std::ofstream file("atm.bin", std::ios::binary);
 	file.write((char*)&sum, sizeof(sum));
-	for (const int i : bNotes) {
-		file.write((char*)&i, sizeof(i));
-	}
+	file.write((char*)&bNotes[0], bNotes.size() * sizeof(int));
+
+
 	file.close();
 }
 
@@ -77,9 +77,13 @@ void cashout(int sum) {
 		return;
 	}
 
-	std::vector<int> bNotesAtm(6);
-	for (int i = 0; i < 6; i ++) {
-		file.read((char*)&bNotesAtm[i], sizeof(int));
+	std::vector<int> bNotesAtm (6);
+
+	file.read((char*) &bNotesAtm[0], bNotesAtm.size() * sizeof(int));
+
+
+	for (int i : bNotesAtm) {
+		std::cout << i << std::endl;
 	}
 
 	std::cout << "Cashout" << std::endl;

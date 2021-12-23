@@ -80,45 +80,51 @@ void drow() {
 	system("cls");
 
 	for (int i = 0; i < length; i++) {
-		for (int j = 0; j < width; j++) {
-			bool empty = true;
-			if (i == 0 || i == length - 1) {
-				std::cout << '#';
-			} else if (j == 0 || j == width - 1) {
-				std::cout << "#";
-			} else {
+		for (int j = 0; j < width + 1; j++) {
+			// game field
+			if (j < width) {
+				bool empty = true;
+				if (i == 0 || i == length - 1) {
+					std::cout << '#';
+				} else if (j == 0 || j == width - 1) {
+					std::cout << "#";
+				} else {
 
-				for (Character cord : nps) {
-					if (!cord.dead && i == cord.x && j == cord.y) {
-						std::cout << "E";
+					for (Character cord : nps) {
+						if (!cord.dead && i == cord.x && j == cord.y) {
+							std::cout << "E";
+							empty = false;
+						}
+					}
+
+					if (!player.dead && i == player.x && j == player.y) {
+						std::cout << "P";
 						empty = false;
 					}
-				}
 
-				if (!player.dead && i == player.x && j == player.y) {
-					std::cout << "P";
-					empty = false;
+					if (empty) std::cout << ".";
 				}
+			}
+			// info game
+			if (j == width) {
+				std::cout << "     ";
+				if (i == 1) std::cout << "Herro: " << player.name;
+				if (i == 3) std::cout << "hp: " << player.hp;
+				if (i == 4) std::cout << "armor: " << player.armor;
+				if (i == 5) std::cout << "damage: " << player.damage;
+				if (i == 6) std::cout << "x: " << player.x;
+				if (i == 7) std::cout << "y: " << player.y;
 
-				if (empty) std::cout << ".";
+				if (i == 10) std::cout << "NPS";
+				if (i >= 12 && i <= 16)
+					std::cout << nps[i - 12].name << " hp: " << std::setw(3) << nps[i - 12].hp << " a: " <<
+							std::setw(2) << nps[i - 12].armor << " d: " << std::setw(2) << nps[i - 12].damage <<
+							" x:" << std::setw(2) << nps[i - 12].x << " y:" << std::setw(2) << nps[i - 12].y;
+
 			}
 		}
 		std::cout << std::endl;
 	}
-
-	std::cout << std::endl << "Herro: " << std::endl;
-
-	std::cout << player.name << " hp: " << std::setw(3) << player.hp << " a: " << std::setw(2) <<
-			player.armor << " d: " << std::setw(2) << player.damage << " x: " << std::setw(2) << player.x
-			<< " y: " << std::setw(2) << player.y << std::endl;
-
-	std::cout << "NPS: " << std::endl;
-	for (Character nps_u : nps) {
-		std::cout << nps_u.name << " hp: " << std::setw(3) << nps_u.hp << " a: " << std::setw(2) <<
-				nps_u.armor << " d: " << std::setw(2) << nps_u.damage << " x: " << std::setw(2) << nps_u.x
-				<< " y: " << std::setw(2) << nps_u.y << std::endl;
-	}
-
 }
 
 void input() {
@@ -130,6 +136,14 @@ void logic() {
 }
 
 void move_nps() {
+
+}
+
+void save_game() {
+
+}
+
+void load_game() {
 
 }
 

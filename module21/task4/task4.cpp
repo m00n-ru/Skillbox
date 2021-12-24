@@ -76,7 +76,7 @@ void setup() {
 			continue;
 		}
 	}
-	
+
 	player.x = cord_gen(x_cord);
 	player.y = cord_gen(y_cord);
 	std::cout << "Press any key to start game";
@@ -153,22 +153,28 @@ void draw() {
 void save_game() {
 	std::ofstream save("save.bin", std::ios::binary);
 
-	save << player.name << std::endl;
-	save << player.dead << std::endl;
-	save << player.hp << std::endl;
-	save << player.armor << std::endl;
-	save << player.dead << std::endl;
-	save << player.x << std::endl;
-	save << player.y << std::endl;
+	size_t size_name = player.name.size();
+	save.write((char*)&size_name, sizeof(size_name));
+	save.write(&player.name[0], player.name.size());
+
+	save.write((char*)&player.dead, sizeof(player.dead));
+	save.write((char*)&player.hp, sizeof(player.hp));
+	save.write((char*)&player.armor, sizeof(player.armor));
+	save.write((char*)&player.damage, sizeof(player.damage));
+	save.write((char*)&player.x, sizeof(player.x));
+	save.write((char*)&player.y, sizeof(player.y));
 
 	for (Character& i : nps) {
-		save << i.name << std::endl;
-		save << i.dead << std::endl;
-		save << i.hp << std::endl;
-		save << i.armor << std::endl;
-		save << i.dead << std::endl;
-		save << i.x << std::endl;
-		save << i.y << std::endl;
+		size_t size_name = i.name.size();
+		save.write((char*)&size_name, sizeof(size_name));
+		save.write(&i.name[0], i.name.size());
+
+		save.write((char*)&i.dead, sizeof(i.dead));
+		save.write((char*)&i.hp, sizeof(i.hp));
+		save.write((char*)&i.armor, sizeof(i.armor));
+		save.write((char*)&i.damage, sizeof(i.damage));
+		save.write((char*)&i.x, sizeof(i.x));
+		save.write((char*)&i.y, sizeof(i.y));
 	}
 
 	save.close();
@@ -198,23 +204,32 @@ void status_check() {
 void load_game() {
 	std::ifstream save("save.bin", std::ios::binary);
 
-	save >> player.name;
-	save >> player.dead;
-	save >> player.hp;
-	save >> player.armor;
-	save >> player.dead;
-	save >> player.x;
-	save >> player.y;
+	size_t size_name;
+	save.read((char*)&size_name, sizeof(size_name));
+	player.name.resize(size_name);
+	save.read(&player.name[0], size_name);
+
+	save.read((char*)&player.dead, sizeof(player.dead));
+	save.read((char*)&player.hp, sizeof(player.hp));
+	save.read((char*)&player.armor, sizeof(player.armor));
+	save.read((char*)&player.damage, sizeof(player.damage));
+	save.read((char*)&player.x, sizeof(player.x));
+	save.read((char*)&player.y, sizeof(player.y));
 
 	for (Character& i : nps) {
-		save >> i.name;
-		save >> i.dead;
-		save >> i.hp;
-		save >> i.armor;
-		save >> i.dead;
-		save >> i.x;
-		save >> i.y;
+		size_t size_name;
+		save.read((char*)&size_name, sizeof(size_name));
+		i.name.resize(size_name);
+		save.read(&i.name[0], size_name);
+
+		save.read((char*)&i.dead, sizeof(i.dead));
+		save.read((char*)&i.hp, sizeof(i.hp));
+		save.read((char*)&i.armor, sizeof(i.armor));
+		save.read((char*)&i.damage, sizeof(i.damage));
+		save.read((char*)&i.x, sizeof(i.x));
+		save.read((char*)&i.y, sizeof(i.y));
 	}
+
 	status_check();
 	save.close();
 }

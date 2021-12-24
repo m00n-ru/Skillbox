@@ -5,21 +5,23 @@
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
+#include <conio.h>
 
 struct Character {
-	std::string name;
+	std::string name = "Noname";
 	bool dead = false;
-	int hp;
-	int armor;
-	int damage;
-	int x;
-	int y;
+	int hp = 100;
+	int armor = 100;
+	int damage = 20;
+	int x = 5;
+	int y = 5;
 };
 
 Character player;
 std::vector<Character> nps(5);
 int width = 42;
 int length = 42;
+bool status_game = true;
 
 int cord_gen(std::vector<int>& cord_pool) {
 	while (true) {
@@ -49,34 +51,34 @@ void setup() {
 		y_cord.push_back(nps_unit.y);
 	}
 
-	std::cout << "Create hero:" << std::endl;
-	std::cout << "1. Name hero: ";
-	std::cin >> player.name;
-	while (true) {
-		std::string input;
-		try {
-			std::cout << "2. Heals point: ";
-			std::cin >> input;
-			player.hp = std::stoi(input);
-			std::cout << "3. Armor: ";
-			std::cin >> input;
-			player.armor = std::stoi(input);
-			std::cout << "4. damage: ";
-			std::cin >> input;
-			player.damage = std::stoi(input);
-			break;
-		}
-		catch (std::exception) {
-			std::cout << "Incorrect data type" << std::endl;
-			continue;
-		}
-	}
-
-	player.x = cord_gen(x_cord);
-	player.y = cord_gen(y_cord);
+	// std::cout << "Create hero:" << std::endl;
+	// std::cout << "1. Name hero: ";
+	// std::cin >> player.name;
+	// while (true) {
+	// 	std::string input;
+	// 	try {
+	// 		std::cout << "2. Heals point: ";
+	// 		std::cin >> input;
+	// 		player.hp = std::stoi(input);
+	// 		std::cout << "3. Armor: ";
+	// 		std::cin >> input;
+	// 		player.armor = std::stoi(input);
+	// 		std::cout << "4. damage: ";
+	// 		std::cin >> input;
+	// 		player.damage = std::stoi(input);
+	// 		break;
+	// 	}
+	// 	catch (std::exception) {
+	// 		std::cout << "Incorrect data type" << std::endl;
+	// 		continue;
+	// 	}
+	// }
+	//
+	// player.x = cord_gen(x_cord);
+	// player.y = cord_gen(y_cord);
 }
 
-void drow() {
+void draw() {
 	system("cls");
 
 	for (int i = 0; i < length; i++) {
@@ -90,14 +92,14 @@ void drow() {
 					std::cout << "#";
 				} else {
 
-					for (Character cord : nps) {
-						if (!cord.dead && i == cord.x && j == cord.y) {
+					for (Character& cord : nps) {
+						if (!cord.dead && i == cord.y && j == cord.x) {
 							std::cout << "E";
 							empty = false;
 						}
 					}
 
-					if (!player.dead && i == player.x && j == player.y) {
+					if (!player.dead && i == player.y && j == player.x) {
 						std::cout << "P";
 						empty = false;
 					}
@@ -108,35 +110,32 @@ void drow() {
 			// info game
 			if (j == width) {
 				std::cout << "     ";
-				if (i == 1) std::cout << "Herro: " << player.name;
-				if (i == 3) std::cout << "hp: " << player.hp;
-				if (i == 4) std::cout << "armor: " << player.armor;
-				if (i == 5) std::cout << "damage: " << player.damage;
+				std::cout.setf(std::ios::left);
+				if (i == 1) std::cout << "Hero: " << player.name;
+				if (i == 3) std::cout << std::setw(8) << "HP: " << player.hp;
+				if (i == 4) std::cout << std::setw(8) << "ARMOR: " << player.armor;
+				if (i == 5) std::cout << std::setw(8) << "Damage: " << player.damage;
 				if (i == 6) std::cout << "x: " << player.x;
 				if (i == 7) std::cout << "y: " << player.y;
 
 				if (i == 10) std::cout << "NPS";
 				if (i >= 12 && i <= 16)
-					std::cout << nps[i - 12].name << " hp: " << std::setw(3) << nps[i - 12].hp << " a: " <<
-							std::setw(2) << nps[i - 12].armor << " d: " << std::setw(2) << nps[i - 12].damage <<
-							" x:" << std::setw(2) << nps[i - 12].x << " y:" << std::setw(2) << nps[i - 12].y;
+					std::cout << nps[i - 12].name << " hp: " << std::setw(3) << nps[i - 12].hp <<
+							" a: " <<
+							std::setw(2) << nps[i - 12].armor << " d: " << std::setw(2) << nps[i -
+								12].damage <<
+							" x:" << std::setw(2) << nps[i - 12].x << " y:" << std::setw(2) << nps[i
+								- 12].y;
+				if (i == 20) std::cout << "Control keys:";
+				if (i == 21) std::cout << "W, S, A, D - up, down, left, right";
+				if (i == 23) std::cout << "Q - quit game";
+				if (i == 24) std::cout << "Z - save game";
+				if (i == 25) std::cout << "X - load game";
 
 			}
 		}
 		std::cout << std::endl;
 	}
-}
-
-void input() {
-
-}
-
-void logic() {
-
-}
-
-void move_nps() {
-
 }
 
 void save_game() {
@@ -147,7 +146,110 @@ void load_game() {
 
 }
 
+void logic() {
+	// for (Character& nps_unit : nps)
+
+}
+
+void input() {
+	switch (_getch()) {
+		case 'a': {
+			player.x -= 1;
+			if (player.x == 0) player.x = 1;
+			break;
+		}
+		case 'd': {
+			player.x += 1;
+			if (player.x == width - 1) player.x = width - 2;
+			break;
+		}
+		case 'w': {
+			player.y -= 1;
+			if (player.y == 0) player.y = 1;
+			break;
+		}
+		case 's': {
+			player.y += 1;
+			if (player.y == length - 1) player.y = length - 2;
+			break;
+		}
+		case 'q': {
+			status_game = false;
+			break;
+		}
+		case 'z': {
+			save_game();
+			break;
+		}
+		case 'x': {
+			load_game();
+			break;
+		}
+	}
+}
+
+void move_nps() {
+	for (Character& nps_unit : nps) {
+		int m = rand() % 4; // 0-l 1-r 2-u 3-d
+		bool check = false;
+		switch (m) {
+			case 0: {
+				for (Character& nps_check : nps) {
+					if (nps_unit.x - 1 == nps_check.x && nps_unit.y == nps_check.y) {
+						check = true;
+						break;
+					}
+				}
+				if (!check) nps_unit.x -= 1;
+				if (nps_unit.x == 0) nps_unit.x = 1;
+				break;
+			}
+			case 1: {
+				for (Character& nps_check : nps) {
+					if (nps_unit.x + 1 == nps_check.x && nps_unit.y == nps_check.y) {
+						check = true;
+						break;
+					}
+				}
+				if (!check) nps_unit.x += 1;
+				if (nps_unit.x == width - 1) nps_unit.x = width - 2;
+				break;
+			}
+			case 2: {
+				for (Character& nps_check : nps) {
+					if (nps_unit.x == nps_check.x && nps_unit.y - 1 == nps_check.y) {
+						check = true;
+						break;
+					}
+				}
+				if (!check) nps_unit.y -= 1;
+				if (nps_unit.y == 0) nps_unit.y = 1;
+				break;
+			}
+			case 3: {
+				for (Character& nps_check : nps) {
+					if (nps_unit.x == nps_check.x && nps_unit.y + 1 == nps_check.y) {
+						check = true;
+						break;
+					}
+				}
+				if (!check) nps_unit.y += 1;
+				if (nps_unit.y == length - 1) nps_unit.y = length - 2;
+				break;
+			}
+		}
+	}
+}
+
 int main() {
 	setup();
-	drow();
+
+	player.x = 10;
+	player.y = 10;
+
+	while (status_game) {
+		input();
+		move_nps();
+		draw();
+	}
 }

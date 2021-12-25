@@ -21,7 +21,7 @@ int main() {
 			if (!number.second) {
 				int count = 1;
 				std::string repit = input;
-				while (number.first->first == repit) {
+				while (true) {
 					++number.first;
 					repit = input + std::to_string(count);
 					if (number.first == reg.end() || number.first->first != repit) {

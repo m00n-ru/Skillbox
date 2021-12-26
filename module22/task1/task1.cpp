@@ -19,9 +19,10 @@ void addPhone(std::string& command, std::map<std::string, std::string>& numberTo
 
 	numberToSurname.insert(std::make_pair(num, name));
 
-	if (surnameToNumber.find(name) == surnameToNumber.end()) {
-		surnameToNumber.insert(std::make_pair(name, num));
-	} else {
+	std::pair<std::map<std::string, std::string>::iterator, bool> pair_input;
+	pair_input = surnameToNumber.insert(std::make_pair(name, num));
+
+	if (!pair_input.second) {
 		std::string str = surnameToNumber.find(name)->second;
 		if (str.find(num) == std::string::npos) {
 			str = str + " " + num;

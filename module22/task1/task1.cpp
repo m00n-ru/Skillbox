@@ -1,63 +1,72 @@
-﻿#include <map>
-#include <iostream>
+﻿#include <iostream>
 #include <string>
+#include <map>
+
+bool check_num(const std::string& command) {
+	for (const char i : command) {
+		if ((i >= '0' && i <= '9') || i == '-') {
+			continue;
+		} else {
+			return false;
+		}
+	}
+	return true;
+}
+
+void addPhone(std::string& command, std::map<std::string, std::string>& numberToSurname, std::map<std::string, std::string>& surnameToNumber) {
+	std::string num = command.substr(0, command.find(' '));
+	std::string name = command.substr(command.find(' ') + 1, command.length());
+
+	numberToSurname.insert(std::make_pair(num, name));
+
+	if (surnameToNumber.find(name) == surnameToNumber.end()) {
+		surnameToNumber.insert(std::make_pair(name, num));
+	} else {
+		std::string str = surnameToNumber.find(name)->second;
+		if (str.find(num) == std::string::npos) {
+			str = str + " " + num;
+			surnameToNumber[name] = str;
+		}
+	}
+}
+
+std::string request_surname(std::string& command, std::map<std::string, std::string>& numberToSurname) {
+	std::string str;
+	if (numberToSurname.find(command) == numberToSurname.end()) {
+		str = "Not found in the list.";
+	} else {
+		std::map<std::string, std::string>::iterator it = numberToSurname.find(command);
+		str = it->second;
+	}
+	return str;
+}
+
+std::string request_number(std::string& command, std::map<std::string, std::string>& surnameToNumber) {
+	std::string str;
+	if (surnameToNumber.find(command) == surnameToNumber.end()) {
+		str = "Not found in the list.";
+	} else {
+		std::map<std::string, std::string>::iterator it = surnameToNumber.find(command);
+		str = it->second;
+	}
+	return str;
+}
 
 int main() {
-	std::map<int, std::string> phonebook;
-	phonebook.insert(std::make_pair(111111, "Ivanov"));
-	phonebook.insert(std::make_pair(222222, "Sidorov"));
-	phonebook.insert(std::make_pair(333333, "Petrov"));
-	phonebook.insert(std::make_pair(123123, "Ivanov"));
-	phonebook.insert(std::make_pair(232323, "Vasiliev"));
-	phonebook.insert(std::make_pair(666666, "Ivanov"));
+	std::map<std::string, std::string> numberToSurname;
+	std::map<std::string, std::string> surnameToNumber;
 
-	std::string com; // xx-xx-xx surname
-	bool check = true;
-	int num = 0;
-	std::string surname;
+	while (true) {
+		std::cout << "Command: ";
+		std::string command;
+		std::getline(std::cin, command);
 
-	std::cout << "Enter command:";
-	getline(std::cin, com);
-
-	for (char& i : com) {
-		if (std::isdigit(com[0])) {
-			if (i >= '0' && i <= '9' && check) {
-				num *= 10;
-				num += ((int)i - '0');
-			}
-			if (!check) surname += i;
-			if (i == ' ') check = false;
-		}
-		else {
-			surname += i;
-		}
-	}
-
-	if (!check) {
-		if (!phonebook.insert(std::make_pair(num, surname)).second) std::cout << "Error the number is already registered";
-		phonebook.insert(std::make_pair(num, surname));
-
-		for (std::pair<int, std::string> i : phonebook) {
-			std::cout << i.first / 10000 << "-" << (i.first / 100) % 100
-				<< "-" << i.first % 100 << " ";
-			std::cout << i.second << std::endl;
-		}
-	}
-	else if (num != 0) {
-		if (phonebook.find(num) != phonebook.end()) {
-			std::cout << "Number found:" << std::endl;
-			std::cout << phonebook.find(num)->first << " " << phonebook.find(num)->second;
-		}
-		else {
-			std::cout << "Number not found:" << std::endl;
-		}
-	}
-	else {
-		std::cout << "Number with surname:" << std::endl;
-		for (std::pair<int, std::string> i : phonebook) {
-			if (i.second == surname) {
-				std::cout << " " << i.first << std::endl;
-			}
+		if (command.find(' ') != std::string::npos) {
+			addPhone(command, numberToSurname, surnameToNumber);
+		} else if (check_num(command)) {
+			std::cout << request_surname(command, numberToSurname) << std::endl;
+		} else {
+			std::cout << request_number(command, surnameToNumber) << std::endl;
 		}
 	}
 }

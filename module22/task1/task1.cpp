@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 bool check_num(const std::string& command) {
 	for (const char i : command) {
@@ -13,22 +14,24 @@ bool check_num(const std::string& command) {
 	return true;
 }
 
-void addPhone(std::string& command, std::map<std::string, std::string>& numberToSurname, std::map<std::string, std::string>& surnameToNumber) {
+void addPhone(std::string& command, std::map<std::string, std::string>& numberToSurname, std::map<std::string, std::vector<std::string>>& surnameToNumber) {
 	std::string num = command.substr(0, command.find(' '));
 	std::string name = command.substr(command.find(' ') + 1, command.length());
 
 	numberToSurname.insert(std::make_pair(num, name));
 
-	std::pair<std::map<std::string, std::string>::iterator, bool> pair_input;
-	pair_input = surnameToNumber.insert(std::make_pair(name, num));
-
+	std::pair<std::map<std::string, std::vector<std::string>>::iterator, bool> pair_input;
+	std::vector<std::string> num_pool = {num};
+	pair_input = surnameToNumber.insert({name, num_pool});
 	if (!pair_input.second) {
-		std::string str = surnameToNumber.find(name)->second;
-		if (str.find(num) == std::string::npos) {
-			str = str + " " + num;
-			surnameToNumber[name] = str;
+		for (std::string& i : pair_input.first->second) {
+			if(i == num) {
+				return;
+			}
 		}
+		pair_input.first->second.push_back(num);
 	}
+
 }
 
 std::string request_surname(std::string& command, std::map<std::string, std::string>& numberToSurname) {
@@ -42,20 +45,22 @@ std::string request_surname(std::string& command, std::map<std::string, std::str
 	return str;
 }
 
-std::string request_number(std::string& command, std::map<std::string, std::string>& surnameToNumber) {
+std::string request_number(std::string& command, std::map<std::string, std::vector<std::string>>& surnameToNumber) {
 	std::string str;
 	if (surnameToNumber.find(command) == surnameToNumber.end()) {
 		str = "Not found in the list.";
 	} else {
-		std::map<std::string, std::string>::iterator it = surnameToNumber.find(command);
-		str = it->second;
+		std::map<std::string, std::vector<std::string>>::iterator it = surnameToNumber.find(command);
+		for(std::string& i : it->second) {
+			str += i + " ";
+		}
 	}
 	return str;
 }
 
 int main() {
 	std::map<std::string, std::string> numberToSurname;
-	std::map<std::string, std::string> surnameToNumber;
+	std::map<std::string, std::vector<std::string>> surnameToNumber;
 
 	while (true) {
 		std::cout << "Command: ";

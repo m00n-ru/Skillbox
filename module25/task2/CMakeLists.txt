@@ -2,24 +2,10 @@
 
 project ("Computer" VERSION 1.0)
 
-set(MAIN_DIRECTORY "src")
-set(MAIN_SOURCE ${MAIN_DIRECTORY}/main.cpp
-				${MAIN_DIRECTORY}/cpu/cpu.cpp
-)
+set(CMAKE_CXX_STANDARD 14)
 
-add_executable (${PROJECT_NAME} ${MAIN_SOURCE})
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
-add_subdirectory (${MAIN_DIRECTORY}/gpu)
-add_subdirectory (${MAIN_DIRECTORY}/kbd)
-add_subdirectory (src/ram)
+add_subdirectory(src)
 
-add_library(disk STATIC ${MAIN_DIRECTORY}/disk/disk.cpp)
-
-set(SOURCE_LIB gpu
-			   kbd
-			   ram
-			   disk
-)
-
-target_link_libraries(${PROJECT_NAME} ${SOURCE_LIB})	
 

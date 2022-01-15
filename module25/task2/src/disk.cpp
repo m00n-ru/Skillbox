@@ -11,7 +11,7 @@ void save(const std::vector<int>& vec) {
 	std::cout << "File save" << std::endl;
 	file.close();
   } else {
-	std::cout << "File not found!";
+	std::cout << "File not found!" << std::endl;
   }
 }
 
@@ -25,7 +25,7 @@ std::vector<int> load() {
 	std::cout << "File load" << std::endl;
 	file.close();
   } else {
-	std::cout << "File not found!";
+	std::cout << "File not found!" << std::endl;
   }
 
   return vec;

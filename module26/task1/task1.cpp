@@ -98,23 +98,23 @@ public:
 
 int main() {
   std::string com;
-  Player player;
+  Player* player = new Player;
 
-  player.init_disk();
+  player->init_disk();
   std::cout << "Disk \"New album\"" << std::endl;
-  player.info_disk();
+  player->info_disk();
 
   while (true) {
     std::cout << "Enter command: ";
     std::cin >> com;
     if (com == "play") {
-      player.play_track();
+      player->play_track();
     } else if (com == "pause") {
-      player.pause_track();
+      player->pause_track();
     } else if (com == "next") {
-      player.next_track();
+      player->next_track();
     } else if (com == "stop") {
-      player.stop_track();
+      player->stop_track();
     } else if (com == "exit") {
       std::cout << "EXIT";
       break;
@@ -122,4 +122,7 @@ int main() {
       std::cout << "Error,command" << std::endl;
     }
   }
+
+  delete player;
+  player = nullptr;
 }

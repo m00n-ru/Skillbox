@@ -28,7 +28,7 @@ void trip(std::pair<std::string, int>* train) {
 }
 
 int main() {
-  std::string tr[] = {"Train A", "Train B", "Train C"};
+  const char* tr[] = {"Train A", "Train B", "Train C"};
   std::vector<std::pair<std::string, int>> trains(3);
 
   for (int i = 0; i < 3; i++) {

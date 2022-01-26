@@ -4,9 +4,8 @@
 #include <chrono>
 #include <queue>
 
-std::mutex inorder;
-std::mutex useorder;
-std::mutex outorder;
+std::mutex mOrder;
+std::mutex mDeliv;
 
 
 std::string meal(int& order) {
@@ -21,6 +20,8 @@ std::string meal(int& order) {
       return "(salad)";
     case 4:
       return "(sushi)";
+    default:
+      return "error";
   }
 }
 
@@ -29,9 +30,9 @@ void online(std::queue<int>* queueOrder) {
     std::srand((unsigned int)std::time(nullptr));
     int r = std::rand() % 5;
     std::cout << "Order #" << i << ": ARRIVE " << meal(r) << std::endl;
-    inorder.lock();
+    mOrder.lock();
     queueOrder->push(r);
-    inorder.unlock();
+    mOrder.unlock();
     r = std::rand() % 5 + 6;
     std::this_thread::sleep_for(std::chrono::seconds(r));
   }
@@ -48,10 +49,12 @@ void cooking(std::queue<int>* queueOrder, std::queue<int>* queueDeliv) {
     std::this_thread::sleep_for(std::chrono::seconds(r));
     std::cout << "Order #" << i << ": AWAITING DELIVERY " << meal(queueOrder->front()) << std::endl;
     
-    useorder.lock();
+    mDeliv.lock();
     queueDeliv->push(queueOrder->front());
+    mDeliv.unlock();
+    mOrder.lock();
     queueOrder->pop();
-    useorder.unlock();
+    mOrder.unlock();
   }
 }
 
@@ -63,7 +66,6 @@ void delivery(std::queue<int>* queueDeliv) {
     std::srand((unsigned int)std::time(nullptr));
     std::this_thread::sleep_for(std::chrono::seconds(30));
     std::cout << "Order #" << i << ": DELIVERY " << meal(queueDeliv->front()) << std::endl;
-    queueDeliv->pop();
   }
   std::cout << std::endl << "10 orders delivered !!!" << std::endl;
 }

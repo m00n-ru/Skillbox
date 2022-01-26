@@ -66,6 +66,9 @@ void delivery(std::queue<int>* queueDeliv) {
     std::srand((unsigned int)std::time(nullptr));
     std::this_thread::sleep_for(std::chrono::seconds(30));
     std::cout << "Order #" << i << ": DELIVERY " << meal(queueDeliv->front()) << std::endl;
+    mDeliv.lock();
+    queueDeliv->pop();
+    mDeliv.unlock();
   }
   std::cout << std::endl << "10 orders delivered !!!" << std::endl;
 }

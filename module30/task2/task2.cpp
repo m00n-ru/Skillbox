@@ -3,7 +3,7 @@
 
 
 int main() {
-  cpr::Response r = cpr::Get(cpr::Url("http://httpbin.org/html"));
+  cpr::Response r = cpr::Get(cpr::Url("http://httpbin.org/html"), cpr::Header({{"accept","text/html"}}));
 
   std::string header = r.text;
   int begin = 0;

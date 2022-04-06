@@ -3,8 +3,8 @@
 class Toy {
 	std::string nameToy;
 public:
-	Toy(const std::string name) : nameToy(name) {};
 	Toy() : Toy("Some-toy") {};
+	Toy(const std::string name) : nameToy(name) {};
 	~Toy() {};
 	std::string& get_name() {
 		return nameToy;
@@ -23,8 +23,8 @@ public:
 
 };
 
-shared_ptr_toy::shared_ptr_toy() : pToy(new Toy), num(new int(1)) {
-	std::cout << "Create ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+shared_ptr_toy::shared_ptr_toy() : pToy(nullptr), num(nullptr) {
+	std::cout << "Create empty ptr" << std::endl;
 }
 
 shared_ptr_toy::shared_ptr_toy(const Toy& t) : pToy(new Toy(t)), num(new int(1)) {
@@ -48,7 +48,7 @@ shared_ptr_toy& shared_ptr_toy::operator=(const shared_ptr_toy& pt) {
 		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
 		if(*num == 0) {
 			delete num;
-			num = new int;
+			num = nullptr;
 		}
 		delete pToy;
 	}
@@ -65,12 +65,12 @@ shared_ptr_toy::~shared_ptr_toy() {
 		--(*num);
 		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
 		delete pToy;
-		return;
+	} else {
+		--(*num);
+		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+		delete pToy;
+		delete num;
 	}
-	--(*num);
-	std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
-	delete pToy;
-	delete num;
 }
 
 class UserPtr {

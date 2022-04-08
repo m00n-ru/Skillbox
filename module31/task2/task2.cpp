@@ -1,311 +1,269 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
-#include <memory>
-
+#include <map>
+#include <typeinfo>
 
 class IGraph {
 public:
-	virtual ~IGraph() {};
 	IGraph() {};
-	IGraph(IGraph* _oth) {};
+	IGraph(const IGraph& _oth) {};
+	virtual ~IGraph() {};
 	virtual void AddEdge(int from, int to) = 0;
 	virtual int VerticesCount() const = 0;
-	virtual void GetNextVertices(int index, std::vector<int>& vertices) const = 0;
-	virtual void GetPrevVertices(int index, std::vector<int>& vertices) const = 0;
+	virtual std::vector<int> Vertices() const = 0;
+	virtual std::vector<int> GetNextVertices(int vert) const = 0;
+	virtual std::vector<int> GetPrevVertices(int vert) const = 0;
 	virtual void print() const = 0;
 };
 
-
-//   1 2 3 
-// 1[0 1 0]
-// 2[0 0 0]
-// 3[1 1 0]
-
 class MatrixGraph : public IGraph {
-	bool** matrix;
-	int numVert;
+	std::vector<std::vector<bool>> matrix;
+	std::map<int, int> idByVert;
+	std::vector<int> vertById;
+	int fnId(int vert);
 public:
 	MatrixGraph();
-	explicit MatrixGraph(int n);
-	MatrixGraph(MatrixGraph& graph);
-	~MatrixGraph();
-	void AddEdge(int from, int to);
-	int VerticesCount() const;
-	void GetNextVertices(int index, std::vector<int>& vertices) const;
-	void GetPrevVertices(int index, std::vector<int>& vertices) const;
-	void print() const;
+	MatrixGraph(const MatrixGraph& graph);
+	MatrixGraph(const IGraph& graph);
+	~MatrixGraph() override;
+	void AddEdge(int from, int to) override;
+	int VerticesCount()  const;
+	std::vector<int> Vertices()  const override;
+	std::vector<int> GetNextVertices(int vert) const override;
+	std::vector<int> GetPrevVertices(int vert) const override;
+	void print()  const override;
 };
 
-MatrixGraph::MatrixGraph() : matrix(nullptr), numVert(0) {};
+MatrixGraph::MatrixGraph() {}
 
-MatrixGraph::MatrixGraph(int n) : numVert(n) {
-	matrix = new bool* [n];
-	for (int i = 0; i < numVert; ++i) {
-		matrix[i] = new bool[n];
-		for (int j = 0; j < numVert; ++j) {
-			matrix[i][j] = false;
-		}
-	}
-};
+MatrixGraph::MatrixGraph(const MatrixGraph& graph) {}
 
-MatrixGraph::MatrixGraph(MatrixGraph& graph) {
-	numVert = graph.numVert;
-	matrix = new bool* [numVert];
-	for (int i = 0; i < numVert; ++i) {
-		matrix[i] = new bool[numVert];
-		for (int j = 0; j < numVert; ++j) {
-			matrix[i][j] = graph.matrix[i][j];
+MatrixGraph::MatrixGraph(const IGraph& graph) {
+	if (typeid(graph) != typeid(*this)) {
+		for (auto& a : graph.Vertices()) {
+			for (auto& b : graph.GetNextVertices(a)) {
+				AddEdge(a, b);
+			}
 		}
+	} else {
+		MatrixGraph(graph);
 	}
 }
 
-MatrixGraph::~MatrixGraph() {
-	for (int i = 0; i < numVert; ++i) {
-		delete[] matrix[i];
+MatrixGraph::~MatrixGraph() {}
+
+int MatrixGraph::fnId(int vert) {
+	if (auto pos = idByVert.find(vert); pos != idByVert.end()) {
+		return pos->second;
 	}
-	delete[] matrix;
+
+	const int newId = vertById.size();
+	vertById.push_back(vert);
+	idByVert[vert] = newId;
+
+	for (auto& a : matrix) {
+		a.push_back(false);
+	}
+
+	matrix.push_back(std::vector<bool>(newId + 1, false));
+	return newId;
 }
 
 void MatrixGraph::AddEdge(int from, int to) {
-	if (from < 1) from = 1;
-	if (from > numVert) from = numVert;
-	if (to < 1) to = 1;
-	if (to > numVert) to = numVert;
-	matrix[from - 1][to - 1] = true;
+	int i = fnId(from);
+	int j = fnId(to);
+
+	matrix[i][j] = true;
 }
 
 int MatrixGraph::VerticesCount() const {
-	return numVert;
+	return vertById.size() - 1;
+};
+
+std::vector<int> MatrixGraph::Vertices()const {
+	return vertById;
 }
 
-void MatrixGraph::GetNextVertices(int index, std::vector<int>& vertices) const {
-	if (index < 1 || index > numVert) {
-		return;
+std::vector<int> MatrixGraph::GetNextVertices(int vert) const {
+	int id = idByVert.find(vert)->second;
+	std::vector<int> nextVert;
+	for (int i = 0; i < matrix[id].size(); ++i) {
+		if (matrix[id][i]) {
+			nextVert.push_back(vertById[i]);
+		}
 	}
-	for (int i = 0; i < numVert; ++i) {
-		if (matrix[index - 1][i])
-			vertices.push_back(i + 1);
-	}
+	return nextVert;
 }
 
-void MatrixGraph::GetPrevVertices(int index, std::vector<int>& vertices) const {
-	if (index < 1 || index > numVert) {
-		return;
+std::vector<int> MatrixGraph::GetPrevVertices(int vert) const {
+	int id = idByVert.find(vert)->second;
+	std::vector<int> nextVert;
+	for (int i = 0; i < matrix[id].size(); ++i) {
+		if (matrix[i][id]) {
+			nextVert.push_back(vertById[i]);
+		}
 	}
-	for (int i = 0; i < numVert; ++i) {
-		if (matrix[i][index - 1])
-			vertices.push_back(i + 1);
-	}
+	return nextVert;
 }
 
-void MatrixGraph::print() const {
-	std::cout << "Matrix graph" << std::endl;
-	for (int i = 0; i < numVert; ++i) {
-		for (int j = 0; j < numVert; ++j) {
+void MatrixGraph::print()  const {
+	std::cout << "MatrixGrap" << std::endl;
+	for (int i = 0; i < matrix.size(); ++i) {
+		std::cout << std::setw(3) << vertById[i] << " | ";
+		for (int j = 0; j < matrix.size(); ++j) {
 			std::cout << ((matrix[i][j]) ? ('1') : ('0')) << " ";
 		}
 		std::cout << std::endl;
 	}
-}
 
-// 1 - 3
-// 2 - 1 - 3
-// 3 -
+}
 
 class ListGraph : public IGraph {
-	struct Vert {
-		int numV = 0;
-		Vert* nextV = nullptr;
-		Vert* preV = nullptr;
-	};
-	Vert** listV;
-	int numVert;
+	std::map<int, std::vector<int>> fromVert;
+	std::map<int, std::vector<int>> toVert;
 public:
 	ListGraph();
-	explicit ListGraph(int n);
-	ListGraph(ListGraph& graph);
-	~ListGraph();
-	void AddEdge(int from, int to);
-	int VerticesCount() const;
-	void GetNextVertices(int index, std::vector<int>& vertices) const;
-	void GetPrevVertices(int index, std::vector<int>& vertices) const;
-	void print() const;
+	ListGraph(const ListGraph& graph);
+	ListGraph(const IGraph& graph);
+	~ListGraph() override;
+	void AddEdge(int from, int to) override;
+	int VerticesCount()  const;
+	std::vector<int> Vertices()  const override;
+	std::vector<int> GetNextVertices(int vert) const override;
+	std::vector<int> GetPrevVertices(int vert) const override;
+	void print()  const override;
 };
 
-ListGraph::ListGraph() : listV(nullptr), numVert(0) {}
+ListGraph::ListGraph() {}
 
-ListGraph::ListGraph(int n) : numVert(n) {
-	listV = new Vert * [n];
-	for (int i = 0; i < n; ++i) {
-		listV[i] = nullptr;
-	}
-}
+ListGraph::ListGraph(const ListGraph& graph) {}
 
-ListGraph::ListGraph(ListGraph& graph) {
-	numVert = graph.numVert;
-	listV = new Vert * [numVert];
-	for (int i = 0; i < numVert; ++i) {
-		if (graph.listV[i] == nullptr) {
-			listV[i] = nullptr;
-		} else {
-			auto startV = graph.listV[i];
-			auto startVcopy = listV[i];
-			do {
-				startVcopy = new Vert;
-				startVcopy->numV = startV->numV;
-				startVcopy->nextV = startV->nextV;
-				startVcopy->preV = startV->preV;
-
-				if (startV->nextV) {
-					startV = graph.listV[i]->nextV;
-				}
-			} while (startV->nextV != nullptr);
-		}
-	}
-}
-
-ListGraph::~ListGraph() {
-	for (int i = 0; i < numVert; ++i) {
-		if (listV[i] != nullptr) {
-			auto next = listV[i]->nextV;
-			while (next != nullptr) {
-				auto buf = next;
-				next = next->nextV;
-				delete buf;
+ListGraph::ListGraph(const IGraph& graph) {
+	if (typeid(graph) != typeid(*this)) {
+		for (auto& a : graph.Vertices()) {
+			for (auto& b : graph.GetNextVertices(a)) {
+				AddEdge(a, b);
 			}
-			delete listV[i];
 		}
+	} else {
+		ListGraph(graph);
 	}
-	delete[] listV;
 }
+
+ListGraph::~ListGraph() {}
 
 void ListGraph::AddEdge(int from, int to) {
-	if (from < 1) from = 1;
-	if (from > numVert) from = numVert;
-	if (to < 1) to = 1;
-	if (to > numVert) to = numVert;
-
-	if (listV[from - 1] == nullptr) {
-		listV[from - 1] = new Vert;
-		listV[from - 1]->numV = to;
-	} else {
-		auto startV = listV[from - 1];
-		do {
-			if (startV->numV == to) {
-				return;
-			} else if (startV->numV > to) {
-				auto newV = new Vert;
-				newV->numV = to;
-				newV->nextV = startV;
-				if (startV->preV == nullptr) {
-					listV[from - 1] = newV;
-				} else {
-					startV->preV = newV;
-				}
-				return;
-			} else if (startV->numV < to && startV->nextV == nullptr) {
-				auto newV = new Vert;
-				newV->numV = to;
-				newV->preV = startV;
-				startV->nextV = newV;
-				return;
+	if (auto pos = fromVert.find(from); pos != fromVert.end()) {
+		bool push = true;
+		for (auto& a : pos->second) {
+			if (a == to) {
+				push = false;
+				break;
 			}
-			startV = startV->nextV;
-		} while (startV->nextV != nullptr);
+		}
+		if (push) {
+			fromVert[from].push_back(to);
+		}
+	} else {
+		fromVert[from].push_back(to);
 	}
+
+	if (auto pos = toVert.find(to); pos != toVert.end()) {
+		bool push = true;
+		for (auto& a : pos->second) {
+			if (a == from) {
+				push = false;
+				break;
+			}
+		}
+		if (push) {
+			toVert[to].push_back(from);
+		}
+	} else {
+		toVert[to].push_back(from);
+	}
+
 }
 
 int ListGraph::VerticesCount() const {
-	return numVert;
+	return fromVert.size();
 }
 
-void ListGraph::GetNextVertices(int index, std::vector<int>& vertices) const {
-	if (index < 0 || index >= numVert) {
-		return;
+std::vector<int> ListGraph::Vertices() const {
+	std::vector<int> allVert;
+	for (auto& a : fromVert) {
+		allVert.push_back(a.first);
 	}
-	if (listV[index - 1]) {
-		auto start = listV[index - 1];
-		while (start) {
-			vertices.push_back(start->numV);
-			start = start->nextV;
+
+	for (auto& a : toVert) {
+		if (fromVert.find(a.first) == fromVert.end()) {
+			allVert.push_back(a.first);
 		}
 	}
+	return allVert;
 }
 
-void ListGraph::GetPrevVertices(int index, std::vector<int>& vertices) const {
-	if (index < 1 || index > numVert) {
-		return;
+std::vector<int> ListGraph::GetNextVertices(int vert) const {
+	if (fromVert.find(vert) != fromVert.end()) {
+		return fromVert.find(vert)->second;
 	}
-	for (int i = 0; i < numVert; ++i) {
-		if (listV[i]) {
-			auto start = listV[i];
-			while (start) {
-				if (start->numV == index) {
-					vertices.push_back(i + 1);
-				}
-				start = start->nextV;
-			}
-		}
-	}
+	return std::vector<int>();
 }
 
-void ListGraph::print() const {
-	std::cout << "List graph" << std::endl;
-	for (int i = 0; i < numVert; ++i) {
-		std::cout << i + 1 << ": ";
-		if (listV[i] != nullptr) {
-			std::cout << listV[i]->numV << " ";
-			auto nV = listV[i]->nextV;
-			while (nV != nullptr) {
-				std::cout << nV->numV << " ";
-				nV = nV->nextV;
+std::vector<int> ListGraph::GetPrevVertices(int vert) const {
+	if (toVert.find(vert) != toVert.end()) {
+		return toVert.find(vert)->second;
+	}
+	return std::vector<int>();
+}
+
+void ListGraph::print()  const {
+	std::cout << "List Grap" << std::endl;
+	for (auto& a : Vertices()) {
+		std::cout << std::setw(3) << a << " | ";
+		if (auto pos = fromVert.find(a); pos != fromVert.end()) {
+			for (auto& b : pos->second) {
+				std::cout << b << " ";
 			}
 		}
 		std::cout << std::endl;
 	}
 }
+
 
 int main() {
-	std::vector<int> fromM;
-	std::vector<int> toM;
-	std::vector<int> fromL;
-	std::vector<int> toL;
+	MatrixGraph test1;
+	ListGraph test2;
+	MatrixGraph test3;
 
+	test1.AddEdge(2, 3);
+	test1.AddEdge(42, 6);
+	test1.AddEdge(-32, 3);
+	test1.AddEdge(6, 3);
+	test1.AddEdge(2, 3);
+	test1.AddEdge(2, -23);
 
+	test2 = test1;
+	test3 = test1;
 
-	IGraph* arrGraph[2];
-	arrGraph[0] = new MatrixGraph(4);
-	arrGraph[1] = new ListGraph(4);
-
-	for (auto& i : arrGraph) {
-		i->AddEdge(1, 3);
-		i->AddEdge(2, 3);
-		i->AddEdge(2, 2);
-		i->AddEdge(1, 3);
-		i->AddEdge(4, 1);
-	}
+	test1.print();
 	std::cout << std::endl;
+	test2.print();
+	std::cout << std::endl;
+	test3.print();
 
-	for (auto& i : arrGraph) {
-		i->print();
-		std::cout << std::endl;
-		std::vector<int> from;
-		std::vector<int> to;
+	std::cout << std::endl;
+	std::cout << "from 2 | ";
+	std::vector<int> from = test1.GetNextVertices(2);
+	for (auto& i : from) {
+		std::cout << i << " ";
+	}
 
-		i->GetNextVertices(3, from);
-		std::cout << "From 3: ";
-		for (auto& i : from) {
-			std::cout << i << " ";
-		}
-		std::cout << std::endl;
-
-		i->GetPrevVertices(2, to);
-		std::cout << "To 2: ";
-		for (auto& i : to) {
-			std::cout << i << " ";
-		}
-		std::cout << std::endl;
-
-		std::cout << "Vertices count= " << i->VerticesCount() << std::endl << std::endl;
+	std::cout << std::endl;
+	std::cout << "to 3 | ";
+	std::vector<int> to = test2.GetPrevVertices(3);
+	for (auto& i : to) {
+		std::cout << i << " ";
 	}
 }

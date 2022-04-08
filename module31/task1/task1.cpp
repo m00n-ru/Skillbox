@@ -3,7 +3,7 @@
 class Toy {
 	std::string nameToy;
 public:
-	Toy() : Toy("Some-toy") {};
+	Toy() : nameToy("Some toy") {};
 	Toy(const std::string name) : nameToy(name) {};
 	~Toy() {};
 	std::string& get_name() {
@@ -20,68 +20,61 @@ public:
 	shared_ptr_toy(const shared_ptr_toy& pt);
 	shared_ptr_toy& operator=(const shared_ptr_toy& pt);
 	~shared_ptr_toy();
-
 };
 
 shared_ptr_toy::shared_ptr_toy() : pToy(nullptr), num(nullptr) {
-	std::cout << "Create empty ptr" << std::endl;
+	std::cout << "--Create empty ptr" << std::endl;
 }
 
 shared_ptr_toy::shared_ptr_toy(const Toy& t) : pToy(new Toy(t)), num(new int(1)) {
-	std::cout << "Create ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+	std::cout << "--Create ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
 }
 
 shared_ptr_toy::shared_ptr_toy(const shared_ptr_toy& pt) {
-	pToy = new Toy(*pt.pToy);
+	pToy = pt.pToy;
 	num = pt.num;
 	++(*num);
-	std::cout << "Copy ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+	std::cout << "--Copy ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
 }
 
 shared_ptr_toy& shared_ptr_toy::operator=(const shared_ptr_toy& pt) {
-	if(this == &pt) {
+	if (this == &pt) {
 		return *this;
 	}
 
-	if(pToy != nullptr) {
-		--(*num);
-		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
-		if(*num == 0) {
-			delete num;
-			num = nullptr;
-		}
+	if (--(*num) == 0) {
+		std::cout << "--Delete ptr oper=: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+		delete num;
 		delete pToy;
 	}
 
-	pToy = new Toy(*pt.pToy);
-	num = pt.num;
-	++(*num);
-	std::cout << "Copy ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+	if (pt.pToy) {
+		pToy = pt.pToy;
+		num = pt.num;
+		++(*num);
+		std::cout << "--Oper= ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+		return *this;
+	}
+
+	pToy=nullptr;
+	num = nullptr;
+	std::cout << "--Oper= nullptr " << std::endl;
 	return *this;
 }
 
 shared_ptr_toy::~shared_ptr_toy() {
-	if(*num > 1) {
-		--(*num);
-		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
-		delete pToy;
+	if (pToy) {
+		if (--(*num) == 0) {
+			std::cout << "--Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+			delete num;
+			delete pToy;
+		} else {
+			std::cout << "--Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
+		}
 	} else {
-		--(*num);
-		std::cout << "Delete ptr: " << pToy->get_name() << " all_ptr = " << *num << std::endl;
-		delete pToy;
-		delete num;
+		std::cout << "--Delete nullptr: " << std::endl;
 	}
 }
-
-class UserPtr {
-	shared_ptr_toy pToy;
-public:
-	UserPtr(shared_ptr_toy& ptr) : pToy(ptr) {};
-	UserPtr& operator=(const UserPtr& ptr) {
-		this->pToy = ptr.pToy;
-		return *this;
-	}
-};
 
 shared_ptr_toy make_shared_toy(const Toy& toy) {
 	shared_ptr_toy ptr(toy);
@@ -95,24 +88,25 @@ shared_ptr_toy make_shared_toy(const std::string& str) {
 }
 
 int main() {
-	Toy toy1;
-	std::cout << "Create 2 shared_ptr_toy : " << std::endl;
-	shared_ptr_toy ptrToy1 = make_shared_toy(toy1);
-	shared_ptr_toy ptrToy2 = make_shared_toy("Toy-Toy");
+	Toy toyO("Toy 1");
 
-	std::cout << std::endl;
-	std::cout << "Create 5 users shared_ptr_toy : " << std::endl;
-	UserPtr	user1a(ptrToy1);
-	UserPtr	user2a(ptrToy1);
-	UserPtr	user3a(ptrToy1);
-	UserPtr	user1b(ptrToy2);
-	UserPtr	user2b(ptrToy2);
+	std::cout << "1" << std::endl;
+	shared_ptr_toy ptr1 = make_shared_toy(toyO);
 
-	std::cout << std::endl;
-	std::cout << "Copy shared_ptr_toy : " << std::endl;
-	user1b = user1a;
-	user2b = user1a;
+	std::cout << "2" << std::endl;
+	shared_ptr_toy ptr2 = ptr1;
 
-	std::cout << std::endl;
-	std::cout << "End program" << std::endl;
+	std::cout << "3" << std::endl;
+	shared_ptr_toy ptr3;
+
+	std::cout << "4" << std::endl;
+	ptr2 = ptr3;
+
+	std::cout << "5" << std::endl;
+	shared_ptr_toy ptr4 = make_shared_toy("Toy 2");
+
+	std::cout << "6" << std::endl;
+	ptr1 = ptr4;
+	std::cout << "7" << std::endl;
+
 }

@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+message bisines {
+  required int32 date = 1;
+  required string address = 2;
+  required string name = 3;
+  optional string typeBisines = 4;
+  optional bool foreign = 5;
+}

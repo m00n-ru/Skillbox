@@ -1,0 +1,77 @@
+{
+    "The Godfather": {
+        "companies": "Paramount Pictures",
+        "country": "United States",
+        "date": 1972,
+        "directed": "Francis Ford Coppola",
+        "producer": "Albert S. Ruddy",
+        "screenplay": "Mario Puzo",
+        "starring": [
+            "Marlon Brando",
+            "Al Pacino",
+            "James Caan",
+            "Richard Castellano",
+            "Robert Duvall"
+        ]
+    },
+    "The Shawshank Redemption": {
+        "companies": "Castle Rock Entertainment",
+        "country": "United States",
+        "date": 1994,
+        "directed": "Frank Darabont",
+        "producer": "Niki Marvin",
+        "screenplay": "Frank Darabont",
+        "starring": [
+            "Tim Robbins",
+            "Morgan Freeman",
+            "Bob Gunton",
+            "William Sadler",
+            "Clancy Brown"
+        ]
+    },
+    "The Dark Knight": {
+        "companies": "Warner Bros. Pictures",
+        "country": "United States",
+        "date": 2008,
+        "directed": "Christopher Nolan",
+        "producer": "Emma Thomas",
+        "screenplay": "Jonathan Nolan",
+        "starring": [
+            "Christian Bale",
+            "Michael Caine",
+            "Heath Ledger",
+            "Gary Oldman",
+            "Aaron Eckhart"
+        ]
+    },
+    "Schindler's List": {
+        "companies": "Universal Pictures",
+        "country": "United States",
+        "date": 1993,
+        "directed": "Steven Spielberg",
+        "producer": "Steven Spielberg",
+        "screenplay": "Steven Zaillian",
+        "starring": [
+            "Liam Neeson",
+            "Ben Kingsley",
+            "Ralph Fiennes",
+            "Caroline Goodall",
+            "Jonathan Sagall"
+        ]
+    },
+    "The Lord of the Rings: The Return of the King": {
+        "companies": "New Line Cinema",
+        "country": "New Zealand",
+        "date": 2008,
+        "directed": "Peter Jackson",
+        "producer": "Barrie M. Osborne",
+        "screenplay": "Fran Walsh",
+        "starring": [
+            "Elijah Wood",
+            "Ian McKellen",
+            "Liv Tyler",
+            "Viggo Mortensen",
+            "Sean Astin"
+        ]
+    }
+}

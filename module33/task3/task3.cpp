@@ -21,15 +21,13 @@ void Registr<T1, T2>::add(T1& key, T2& val) {
 
 template<typename T1, typename T2>
 void Registr<T1, T2>::remove(T1& key) {
-    auto itK = keys.begin();
-    auto itV = values.begin();
     bool find = false;
-    for (itK, itV; itK != keys.end() || itV != values.end(); ++itK, ++itV) {
-        if (*itK == key) {
-            keys.erase(itK);
-            values.erase(itV);
-            --itK;
-            --itV;
+    for (int i = 0, j = 0; i < keys.size() || j < values.size(); ++i, ++j) {
+        if (keys[i] == key) {
+            keys.erase(keys.begin() + i);
+            values.erase(values.begin() + j);
+            --i;
+            --j;
             find = true;
         }
     }

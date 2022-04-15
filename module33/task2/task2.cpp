@@ -11,10 +11,8 @@ int fishing(int sect, int* pond) {
     } else {
         if (pond[sect] == 1) {
             throw winException();
-            return 0;
         } else if (pond[sect] == 2) {
             throw loseException();
-            return 0;
         } else {
             return 1;
         }

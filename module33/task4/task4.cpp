@@ -4,10 +4,12 @@
 template<typename T>
 T average(const std::vector<T>& vec) {
     T aver = 0;
-    for (auto& a : vec) {
-        aver += a;
+    if (!vec.empty()) {
+        for (auto& a : vec) {
+            aver += a;
+        }
+        aver /= vec.size();
     }
-    aver /= vec.size();
     return aver;
 }
 
